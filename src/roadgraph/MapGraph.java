@@ -505,24 +505,94 @@ public class MapGraph {
 		}
 	}
 
+	/*
+	To be used in Greedy Algorithm. Given a current node,
+	returns the next closest node to visit
+	 */
+
+	private GeographicPoint getClosestNode (GeographicPoint curr, HashSet<GeographicPoint> visited, double totalDist) throws Exception{
+		GeographicPoint closestNode=null;
+		MapNode currNode = pointNodeMap.get(curr);
+		double distance = Double.POSITIVE_INFINITY;
+		for (MapEdge e : currNode.getEdges()){
+				if (distance > e.getLength() && !visited.contains(e.getEndPoint())){
+					distance = e.getLength();
+					closestNode = e.getEndPoint();
+				}
+		}
+		totalDist+= distance;
+		return closestNode;	}
+
+		/*
+	Traverses all nodes in the graph, starting from homeCity, using Greedy Algorithm,
+	until returns back to homeCity
+	 */
+
+
+	public void tspGreedySearch (GeographicPoint homeCity) {
+		System.out.println("Starting TSP Greedy algorithm with start location as: " + homeCity);
+		LinkedList<GeographicPoint> greedyPath= new LinkedList<>(); //LList to store Greedy path if found
+		HashSet<GeographicPoint> visited = new HashSet<GeographicPoint>();
+		Consumer<GeographicPoint> nodeSearched = (x) -> {};
+		GeographicPoint nextCity , currCity;
+		double totalDist = 0;
+
+		visited.add(homeCity);
+		greedyPath.addFirst(homeCity);
+		nextCity = null;
+		currCity = homeCity;
+		for (int i=0; i < pointNodeMap.size(); i++){
+			try {
+				nextCity= getClosestNode(currCity, visited, totalDist);
+				if (nextCity == null) {break;}
+				visited.add(nextCity);
+				greedyPath.add(nextCity);
+				currCity = nextCity;
+			} catch (Exception e) {
+				//e.printStackTrace();
+				System.out.println("Failed to found greedy cycle path");
+				return;
+			}
+		}
+		MapNode lastNode = pointNodeMap.get(greedyPath.getLast());
+		MapNode homeNode = pointNodeMap.get(homeCity);
+		if (lastNode.getNeighbors().contains(homeNode)){
+			for (MapEdge e : lastNode.getEdges()){
+				if (e.getEndPoint().equals(homeCity)){
+					totalDist += e.getLength();
+					break;
+				}
+			}
+			System.out.format("SUCCESS!! Greedy path found with total distance: %d  miles \n", (int)totalDist);
+			greedyPath.add(homeCity);
+			printPath(greedyPath);
+		}
+		else{
+			System.out.println("Greedy path NOT found");
+		}
+
+
+	}
+
 	
 	
 	public static void main(String[] args)
 	{
-		/*
+
 		System.out.print("Making a new map...");
 		MapGraph theMap = new MapGraph();
 		System.out.print("DONE. \nLoading the map...");
-		GraphLoader.loadRoadMap("data/testdata/simpletest.map", theMap);
+		GraphLoader.loadRoadMap("data/testdata/greedy.map", theMap);
 		System.out.println("DONE.");
-		theMap.printGraph();
-		GeographicPoint start = new GeographicPoint(7, 3);
+		//theMap.printGraph();
+		GeographicPoint start = new GeographicPoint(4, 1);
 		GeographicPoint end = new GeographicPoint(4, -1);
-		List<GeographicPoint> route = theMap.dijkstra(start,end);
-		List<GeographicPoint> route = theMap.aStarSearch(start,end);
-		theMap.printPath(route);
+		//List<GeographicPoint> route = theMap.dijkstra(start,end);
+		//List<GeographicPoint> route = theMap.aStarSearch(start,end);
+		//theMap.printPath(route);
+		theMap.tspGreedySearch(start);
 
-		 */
+
 
 		// You can use this method for testing.  
 		
@@ -574,6 +644,8 @@ public class MapGraph {
 
 		 */
 
+		/*
+
 		MapGraph theMap = new MapGraph();
 		System.out.print("DONE. \nLoading the map...");
 		GraphLoader.loadRoadMap("data/maps/utc.map", theMap);
@@ -584,6 +656,8 @@ public class MapGraph {
 
 		List<GeographicPoint> route = theMap.dijkstra(start,end);
 		List<GeographicPoint> route2 = theMap.aStarSearch(start,end);
+
+		 */
 
 
 	}

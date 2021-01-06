@@ -15,8 +15,8 @@ public class speedMap {
 
     static public void main(String args[]) throws IOException {
         try {
-            String roadsGoogleUrl = "https://roads.googleapis.com/v1/speedLimits?path=60.170880,24.942795|60.170879,24.942796|60.170877,24.942796&key=AIzaSyAG39EzHuStXUBQ7Ke2_6wqBNgrfEejjC4";
-            //String roadsGoogleUrl = "https://roads.googleapis.com/";
+
+
             URL myUrl = new URL(roadsGoogleUrl);
             HttpsURLConnection conn = (HttpsURLConnection) myUrl.openConnection();
             InputStream is = conn.getInputStream();

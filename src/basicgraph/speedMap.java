@@ -10,7 +10,7 @@ import java.net.URLConnection;
 public class speedMap {
 
     static private URL myURL;
-   // static final String roadsGoogleUrl = "https://roads.googleapis.com/v1/speedLimits?parameters&key=AIzaSyAG39EzHuStXUBQ7Ke2_6wqBNgrfEejjC4";
+
 
 
     static public void main(String args[]) throws IOException {
